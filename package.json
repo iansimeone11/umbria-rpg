@@ -1,0 +1,11 @@
+{
+  "name": "umbria-rpg",
+  "version": "1.0.0",
+  "private": true,
+  "description": "RPG retro en Canvas con arte procedural y combate mágico",
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "node --test tests/engine.test.cjs",
+    "start": "node serve.cjs"
+  }
+}

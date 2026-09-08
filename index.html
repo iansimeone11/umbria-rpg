@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Umbría: un prototipo RPG de combate mágico y exploración de mazmorras en pixel art.">
+  <title>Umbría · Las criptas del olvido</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="masthead"><div class="brand"><span class="sigil">ᛟ</span><h1>UMBRÍA</h1><span class="edition">CRÓNICAS DEL SUBSUELO</span></div><div class="session"><i></i> AVENTURA LOCAL <span>•</span> <button id="help" aria-label="Ver controles">? <span>Controles</span></button><button id="pause" title="Pausar · Esc">Ⅱ</button><button id="sound" title="Activar sonido" aria-label="Activar sonido">Sonido: no</button></div></header>
+    <main class="game-layout">
+      <section class="world-panel" aria-label="Mazmorra">
+        <div class="location"><span><span class="diamond">◆</span> LAS CRIPTAS DEL OLVIDO <small>Profundidad I</small></span><span class="coords" id="coords">X: 08 · Y: 10</span></div>
+        <div class="viewport">
+          <canvas id="game" width="832" height="608" tabindex="0" aria-label="Juego. Mover con WASD o flechas; clic para seleccionar enemigo; teclas 1 a 8 para acciones."></canvas>
+          <div id="log" class="log" role="log" aria-live="polite"></div>
+          <div class="zone-tag">TERRITORIO HOSTIL <i></i></div>
+          <div id="target" class="target" hidden></div>
+          <div id="overlay" class="overlay" hidden></div>
+          <div class="world-footer"><span id="objective">Elimina a los guardianes de la cripta</span><span><kbd>E</kbd> recoger</span></div>
+        </div>
+        <div class="action-dock"><div class="hotbar" id="hotbar" aria-label="Acciones rápidas"></div><div class="action-hint"><span><kbd>W A S D</kbd> mover</span><span><b>CLIC</b> objetivo</span><span><kbd>TAB</kbd> siguiente enemigo</span></div></div>
+      </section>
+      <aside class="sidebar">
+        <section class="character"><div class="character-heading"><canvas id="portrait" width="56" height="64"></canvas><div><span class="eyebrow">EL ERRANTE</span><h2>Aldren</h2><span class="class-name">Mago del círculo gris</span></div><span class="level-badge" id="level">12<small>NIVEL</small></span></div><div id="stats"></div><div class="wealth"><span>◈ <b id="gold">240</b> <small>ORO</small></span><span id="kills">0 / 7 almas</span></div></section>
+        <section class="inventory-section"><div class="section-title"><h3>Inventario</h3><span id="capacity">8 / 20</span></div><div id="inventory" class="inventory"></div><p class="muted">Clic en una poción para beberla.</p></section>
+        <section><div class="section-title"><h3>Equipamiento</h3><span>IV</span></div><div id="equipment" class="equipment"></div></section>
+        <section class="quest"><span class="eyebrow">ENCARGO ACTIVO</span><h3>Un silencio antiguo</h3><p>La cripta vuelve a respirar. Derrota a sus guardianes y reclama lo que custodian.</p><div><span id="quest-progress">0 de 7 guardianes</span><span>◈ 350</span></div><div class="quest-track"><i id="quest-fill"></i></div></section>
+        <div class="sidebar-bottom"><span class="diamond">✦</span> No todos los que vagan están perdidos.</div>
+      </aside>
+    </main>
+    <footer class="bottom-line"><span><i></i> UMBRÍA <b>·</b> PROTOTIPO RPG</span><span>32 × 32 <b>·</b> CANVAS 2D <b>·</b> <span id="fps">60</span> FPS</span></footer>
+  </div>
+  <script src="js/data.js"></script><script src="js/art.js"></script><script src="js/engine.js"></script><script src="js/ui.js"></script><script src="js/main.js"></script>
+</body>
+</html>

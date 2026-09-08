@@ -1,0 +1,17 @@
+'use strict';
+(() => {
+ AO.Art.init();const canvas=document.querySelector('#game'),game=new AO.Game(),renderer=new AO.Renderer(canvas),ui=new AO.UI(game),keys=new Set();let sound=false,audio;
+ game.onSound=(frequency)=>{if(!sound)return;try{audio??=new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const osc=audio.createOscillator(),gain=audio.createGain();osc.type='triangle';osc.frequency.setValueAtTime(frequency,audio.currentTime);osc.frequency.exponentialRampToValueAtTime(frequency*.45,audio.currentTime+.16);gain.gain.setValueAtTime(.045,audio.currentTime);gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.18);osc.connect(gain);gain.connect(audio.destination);osc.start();osc.stop(audio.currentTime+.2);}catch{sound=false;document.querySelector('#sound').textContent='Sonido: no';}};
+ document.querySelector('#sound').onclick=()=>{sound=!sound;document.querySelector('#sound').textContent='Sonido: '+(sound?'sí':'no');document.querySelector('#sound').setAttribute('aria-label',sound?'Desactivar sonido':'Activar sonido');if(sound)game.onSound(440);};
+ document.querySelector('#help').onclick=()=>{if(!game.dead){keys.clear();ui.overlay(ui.overlayKind?'':'help');}};
+ const togglePause=()=>{if(!game.dead){keys.clear();ui.overlay(ui.overlayKind?'':'pause');}};document.querySelector('#pause').onclick=togglePause;
+ window.addEventListener('keydown',e=>{const key=e.key.toLowerCase();if(e.ctrlKey||e.metaKey||e.altKey)return;if(key==='escape'){e.preventDefault();if(!e.repeat)togglePause();return;}if(game.paused||game.dead)return;if(['arrowup','arrowdown','arrowleft','arrowright','tab',' '].includes(key))e.preventDefault();keys.add(key);if(e.repeat)return;const n=Number(key);if(n>=1&&n<=8)game.cast(n-1);else if(key==='tab')game.cycle();else if(key==='e')game.pickup();});
+ window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();if(!game.dead&&!game.paused)ui.overlay('pause');});document.addEventListener('visibilitychange',()=>{if(document.hidden){keys.clear();if(!game.paused&&!game.dead)ui.overlay('pause');}});
+ canvas.addEventListener('pointerdown',e=>{if(game.paused||game.dead)return;canvas.focus({preventScroll:true});const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)*canvas.width/r.width,y=(e.clientY-r.top)*canvas.height/r.height;const enemies=game.enemies.filter(n=>n.hp>0&&x>=n.px-5&&x<=n.px+37&&y>=n.py-18&&y<=n.py+33).sort((a,b)=>Math.hypot(x-a.px-16,y-a.py-10)-Math.hypot(x-b.px-16,y-b.py-10));if(enemies.length)game.select(enemies[0].id);else game.target=null;});
+ let previous=performance.now(),acc=0,uiAcc=0,frames=0,fpsAcc=0;
+ // Fixed 60Hz simulation with bounded catch-up; rendering is independent.
+ function frame(now){const dt=Math.min((now-previous)/1000,.1);previous=now;acc+=dt;while(acc>=1/60){game.update(1/60,keys);acc-=1/60;}renderer.draw(game);uiAcc+=dt;fpsAcc+=dt;frames++;if(uiAcc>=.1){ui.update();uiAcc=0;}if(fpsAcc>=1){document.querySelector('#fps').textContent=Math.round(frames/fpsAcc);frames=0;fpsAcc=0;}requestAnimationFrame(frame);}
+ ui.update();renderer.draw(game);requestAnimationFrame(frame);
+ // Read-only snapshot useful for integrations and diagnostics.
+ window.umbria={snapshot:()=>({player:{...game.player},target:game.target?.name||null,kills:game.kills,gold:game.gold,paused:game.paused,dead:game.dead,won:game.won})};
+})();
